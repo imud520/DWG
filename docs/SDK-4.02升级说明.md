@@ -43,10 +43,10 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass `
 
 ## 当前默认行为
 
-- `启动软件.cmd`、`编译并启动.cmd`：继续使用 Teigha 3.03。
-- `测试新版SDK.cmd`：使用 Teigha 4.02.2。
+- `启动软件.cmd`、`编译并启动.cmd`、`测试新版SDK.cmd`：使用 Teigha 4.02.2。
+- `启动旧版3.03.cmd`：保留的旧版回退入口，使用 Teigha 3.03。
 
-在完整业务回归通过前，不把 4.02.2 替换为默认运行库。
+4.02.2 候选运行库位于本机 `artifacts\diagnostics\sdk402-candidate\runtime`，不提交到 Git。
 
 ## 原始文件备份
 

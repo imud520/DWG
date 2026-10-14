@@ -9,7 +9,7 @@ git clone https://github.com/code-z26/DWG.git
 cd DWG
 ```
 
-双击根目录 **`启动软件.cmd`**。它检查随仓库提供的文件，将程序、DLL、字体、CAD 插件和默认模板复制到 `artifacts/desktop`，然后启动软件。无需 Visual Studio，也无需下载 NuGet 包。
+双击根目录 **`启动软件.cmd`**。它使用独立部署的 Teigha/ODA 4.02.2 候选运行库构建并启动程序。旧版 Teigha 3.03 可通过根目录 **`启动旧版3.03.cmd`** 启动。
 
 需要 64 位 Windows、.NET Framework 4.x 和 VC2008 SP1 x64 系统运行环境。启动时若提示缺少 VC2008，请按 [依赖说明](DEPENDENCIES.md) 中的微软官方地址安装一次，再重新启动。
 
@@ -17,9 +17,9 @@ cd DWG
 
 ## 修改源码后运行
 
-安装 Visual Studio / Build Tools、.NET 桌面编译组件及 v4.0 目标框架引用程序集，然后双击 **`编译并启动.cmd`**。它编译最新源码并运行 `artifacts/development` 中的程序。
+安装 Visual Studio / Build Tools、.NET 桌面编译组件及 v4.0 目标框架引用程序集，然后双击 **`编译并启动.cmd`**。它编译最新源码并使用 Teigha/ODA 4.02.2 候选运行库启动程序。
 
-`启动软件.cmd` 运行仓库中的程序快照；`编译并启动.cmd` 运行刚编译的源码。开发时使用后者，避免误测旧快照。
+`启动软件.cmd` 和 `编译并启动.cmd` 都使用 4.02.2 候选构建；`启动旧版3.03.cmd` 运行保留的旧版程序。
 
 也可以在 PowerShell 执行：
 
