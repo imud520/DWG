@@ -429,7 +429,7 @@ namespace Teigha_Learn_Cad
                     {
                         if (!item.IsNull && !item.IsErased)
                         {
-                            using (Entity ent = (Entity)item.GetObject(OpenMode.ForRead))
+                            using (Entity ent = (Entity)item.GetObject(OpenMode.ForRead, false, true))
                             {
                                 ent.Highlight();
                                 GlobalEntityData.SelectedEntityId = ent.ObjectId;
@@ -509,7 +509,7 @@ namespace Teigha_Learn_Cad
                     {
                         if (!item.IsNull && !item.IsErased)
                         {
-                            using (Entity ent = (Entity)item.GetObject(OpenMode.ForRead))
+                            using (Entity ent = (Entity)item.GetObject(OpenMode.ForRead, false, true))
                             {
                                 ent.Highlight();
                                 GlobaltextData1.SelectedEntityId = ent.ObjectId;
@@ -579,7 +579,7 @@ namespace Teigha_Learn_Cad
                     {
                         if (!item.IsNull && !item.IsErased)
                         {
-                            using (Entity ent = (Entity)item.GetObject(OpenMode.ForRead))
+                            using (Entity ent = (Entity)item.GetObject(OpenMode.ForRead, false, true))
                             {
                                 ent.Highlight();
                                 GlobaltextData2.SelectedEntityId = ent.ObjectId;
@@ -715,7 +715,7 @@ namespace Teigha_Learn_Cad
                     {
                         if (!item.IsNull && !item.IsErased)
                         {
-                            using (Entity ent = (Entity)item.GetObject(OpenMode.ForRead))
+                            using (Entity ent = (Entity)item.GetObject(OpenMode.ForRead, false, true))
                             {
                                 ent.Highlight();
                                 GlobaltextData2.SelectedEntityId = ent.ObjectId;
@@ -991,6 +991,18 @@ namespace Teigha_Learn_Cad
         }
 
 
+        private sealed class NearbyCircle
+        {
+            internal readonly Point3d Center;
+            internal readonly double Radius;
+
+            internal NearbyCircle(Point3d center, double radius)
+            {
+                Center = center;
+                Radius = radius;
+            }
+        }
+
         private void Basepanel_MouseDown6(object sender, MouseEventArgs e)
         {
             //MessageBox.Show("请选择一条直线", "提示", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
@@ -1008,7 +1020,7 @@ namespace Teigha_Learn_Cad
                     {
                         if (!item.IsNull && !item.IsErased)
                         {
-                            using (Entity ent = (Entity)item.GetObject(OpenMode.ForRead))
+                            using (Entity ent = (Entity)item.GetObject(OpenMode.ForRead, false, true))
                             {
                                 ent.Highlight();
                                 GlobaltextData3.SelectedEntityId = ent.ObjectId;
@@ -1026,13 +1038,13 @@ namespace Teigha_Learn_Cad
 
                                         double searchDistance = 20.0; // 搜索半径
                                         Point3d mtextLocation = fusetext.Location;
-                                        List<Circle> nearbyCircles = FindNearbyCircles(database, mtextLocation, searchDistance);
+                                        List<NearbyCircle> nearbyCircles = FindNearbyCircles(database, mtextLocation, searchDistance);
 
-                                        Circle nearestCircle = null;
+                                        NearbyCircle nearestCircle = null;
                                         double minDistance = double.MaxValue;
 
                                         // 找到离文字最近的圆
-                                        foreach (Circle circle in nearbyCircles)
+                                        foreach (NearbyCircle circle in nearbyCircles)
                                         {
                                             double distance = mtextLocation.DistanceTo(circle.Center);
                                             if (distance < minDistance)
@@ -1046,13 +1058,13 @@ namespace Teigha_Learn_Cad
                                         {
                                             Global.circleRadius = nearestCircle.Radius;
 
-                                            List<Circle> horizontalParallelCircles = new List<Circle>();
-                                            List<Circle> verticalParallelCircles = new List<Circle>();
+                                            List<NearbyCircle> horizontalParallelCircles = new List<NearbyCircle>();
+                                            List<NearbyCircle> verticalParallelCircles = new List<NearbyCircle>();
 
                                             double tolerance = 0.21;//总线型部分不平行差0.2
 
                                             // 分类平行圆
-                                            foreach (Circle circle in nearbyCircles)
+                                            foreach (NearbyCircle circle in nearbyCircles)
                                             {
                                                 if (circle == nearestCircle) continue;
 
@@ -1072,11 +1084,11 @@ namespace Teigha_Learn_Cad
                                             // 初始化最小距离和对应圆
                                             double minHorizontalDistance = double.MaxValue;
                                             double minVerticalDistance = double.MaxValue;
-                                            Circle nearestHorizontalCircle = null;
-                                            Circle nearestVerticalCircle = null;
+                                            NearbyCircle nearestHorizontalCircle = null;
+                                            NearbyCircle nearestVerticalCircle = null;
 
                                             // 找到最近的水平平行圆
-                                            foreach (Circle circle in horizontalParallelCircles)
+                                            foreach (NearbyCircle circle in horizontalParallelCircles)
                                             {
                                                 double dist = nearestCircle.Center.DistanceTo(circle.Center);
                                                 if (dist < minHorizontalDistance)
@@ -1087,7 +1099,7 @@ namespace Teigha_Learn_Cad
                                             }
 
                                             // 找到最近的垂直平行圆
-                                            foreach (Circle circle in verticalParallelCircles)
+                                            foreach (NearbyCircle circle in verticalParallelCircles)
                                             {
                                                 double dist = nearestCircle.Center.DistanceTo(circle.Center);
                                                 if (dist < minVerticalDistance)
@@ -1134,13 +1146,13 @@ namespace Teigha_Learn_Cad
                                         // 新增逻辑：查找附近的圆形
                                         double searchDistance = 20.0; // 搜索半径
                                         Point3d mtextLocation = dbtext.Position;
-                                        List<Circle> nearbyCircles = FindNearbyCircles(database, mtextLocation, searchDistance);
+                                        List<NearbyCircle> nearbyCircles = FindNearbyCircles(database, mtextLocation, searchDistance);
 
-                                        Circle nearestCircle = null;
+                                        NearbyCircle nearestCircle = null;
                                         double minDistance = double.MaxValue;
 
                                         // 找到离文字最近的圆
-                                        foreach (Circle circle in nearbyCircles)
+                                        foreach (NearbyCircle circle in nearbyCircles)
                                         {
                                             double distance = mtextLocation.DistanceTo(circle.Center);
                                             if (distance < minDistance)
@@ -1154,13 +1166,13 @@ namespace Teigha_Learn_Cad
                                         {
                                             Global.circleRadius = nearestCircle.Radius;
 
-                                            List<Circle> horizontalParallelCircles = new List<Circle>();
-                                            List<Circle> verticalParallelCircles = new List<Circle>();
+                                            List<NearbyCircle> horizontalParallelCircles = new List<NearbyCircle>();
+                                            List<NearbyCircle> verticalParallelCircles = new List<NearbyCircle>();
 
                                             double tolerance = 0.21;
 
                                             // 分类平行圆
-                                            foreach (Circle circle in nearbyCircles)
+                                            foreach (NearbyCircle circle in nearbyCircles)
                                             {
                                                 if (circle == nearestCircle) continue;
 
@@ -1180,11 +1192,11 @@ namespace Teigha_Learn_Cad
                                             // 初始化最小距离和对应圆
                                             double minHorizontalDistance = double.MaxValue;
                                             double minVerticalDistance = double.MaxValue;
-                                            Circle nearestHorizontalCircle = null;
-                                            Circle nearestVerticalCircle = null;
+                                            NearbyCircle nearestHorizontalCircle = null;
+                                            NearbyCircle nearestVerticalCircle = null;
 
                                             // 找到最近的水平平行圆
-                                            foreach (Circle circle in horizontalParallelCircles)
+                                            foreach (NearbyCircle circle in horizontalParallelCircles)
                                             {
                                                 double dist = nearestCircle.Center.DistanceTo(circle.Center);
                                                 if (dist < minHorizontalDistance)
@@ -1195,7 +1207,7 @@ namespace Teigha_Learn_Cad
                                             }
 
                                             // 找到最近的垂直平行圆
-                                            foreach (Circle circle in verticalParallelCircles)
+                                            foreach (NearbyCircle circle in verticalParallelCircles)
                                             {
                                                 double dist = nearestCircle.Center.DistanceTo(circle.Center);
                                                 if (dist < minVerticalDistance)
@@ -1246,23 +1258,24 @@ namespace Teigha_Learn_Cad
                 }
             }
             // 辅助方法：查找附近的圆形
-            List<Circle> FindNearbyCircles(Database database, Point3d mtextLocation, double searchDistance)
+            List<NearbyCircle> FindNearbyCircles(Database database, Point3d mtextLocation, double searchDistance)
             {
-                List<Circle> circles = new List<Circle>();
+                List<NearbyCircle> circles = new List<NearbyCircle>();
                 TransactionManager tm = database.TransactionManager;
                 using (Transaction trans = tm.StartTransaction())
                 {
                     BlockTableRecord btr = (BlockTableRecord)trans.GetObject(database.CurrentSpaceId, OpenMode.ForRead);
                     foreach (ObjectId objId in btr)
                     {
-                        Entity ent = trans.GetObject(objId, OpenMode.ForRead) as Entity;
+                        Entity ent = trans.GetObject(objId, OpenMode.ForRead, false, true) as Entity;
                         if (ent != null && ent is Circle)
                         {
                             Circle circle = (Circle)ent;
-                            double distance = mtextLocation.DistanceTo(circle.Center); // 计算距离
+                            Point3d center = circle.Center;
+                            double distance = mtextLocation.DistanceTo(center); // 计算距离
                             if (distance < searchDistance)
                             {
-                                circles.Add(circle); // 符合条件的圆形
+                                circles.Add(new NearbyCircle(center, circle.Radius)); // 在事务结束前保存需要的数据
                             }
                         }
                     }
@@ -1309,10 +1322,11 @@ namespace Teigha_Learn_Cad
 
                         if (selectNEw != null && selectNEw.Count > 0)
                         {
+                            // Selection highlighting only reads entities, including those on locked layers.
                             foreach (ObjectId item in selected)
                             {
                                 if (!item.IsNull && !item.IsErased)
-                                    using (Entity ent = (Entity)item.GetObject(OpenMode.ForRead))
+                                    using (Entity ent = (Entity)item.GetObject(OpenMode.ForRead, false, true))
                                     {
                                         ent.Unhighlight();
                                     }
@@ -1331,7 +1345,7 @@ namespace Teigha_Learn_Cad
                                 {
                                     if (!item.IsErased)
                                     {
-                                        Entity ent = (Entity)item.GetObject(OpenMode.ForRead, false, false);
+                                        Entity ent = (Entity)item.GetObject(OpenMode.ForRead, false, true);
                                         Entity entClone = (Entity)ent.Clone();
                                         entClone.Highlight();
                                         pView.Add(entClone);
@@ -1347,7 +1361,7 @@ namespace Teigha_Learn_Cad
                             foreach (ObjectId item in selected)
                             {
                                 if (!item.IsNull && !item.IsErased)
-                                    using (Entity ent = (Entity)item.GetObject(OpenMode.ForRead))
+                                    using (Entity ent = (Entity)item.GetObject(OpenMode.ForRead, false, true))
                                     {
                                         ent.Highlight();
                                     }
@@ -15249,7 +15263,7 @@ namespace Teigha_Learn_Cad
                                     }
                                     else if (Math.Abs(start.Y - i.line.EndPoint.Y) < 0.1f && Math.Abs(start.X - i.line.EndPoint.X) < 0.1f)
                                     {
-                                        if (!hs.ContainsKey(i.line.StartPoint))
+                                        if (!hs.ContainsKey(i.line.EndPoint))
                                             hs.Add(i.line.EndPoint, i.line.StartPoint);
                                         midlin.Add(i);
                                         midls.Remove(i);

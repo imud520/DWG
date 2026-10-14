@@ -55,6 +55,10 @@
   <PropertyGroup>
     <ApplicationIcon>filetype_dwg_128px_1093523_easyicon.net.ico</ApplicationIcon>
   </PropertyGroup>
+  <PropertyGroup>
+    <CadSdkAssemblyName Condition="'$(CadSdkAssemblyName)' == ''">TD_Mgd_3.03_9</CadSdkAssemblyName>
+    <CadSdkRuntimeDirectory Condition="'$(CadSdkRuntimeDirectory)' == ''">$(MSBuildThisFileDirectory)..\..\vendor\runtime</CadSdkRuntimeDirectory>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="ComponentFactory.Krypton.Docking">
       <HintPath>..\..\vendor\runtime\ComponentFactory.Krypton.Docking.dll</HintPath>
@@ -125,9 +129,9 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
-    <Reference Include="TD_Mgd_3.03_9, Version=3.0.0.8111, Culture=neutral, PublicKeyToken=460a0bef3ba73253, processorArchitecture=AMD64">
+    <Reference Include="$(CadSdkAssemblyName)">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\vendor\runtime\TD_Mgd_3.03_9.dll</HintPath>
+      <HintPath>$(CadSdkRuntimeDirectory)\$(CadSdkAssemblyName).dll</HintPath>
     </Reference>
     <Reference Include="WindowsBase" />
   </ItemGroup>
